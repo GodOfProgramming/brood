@@ -9,12 +9,12 @@ class Test {
     ret {failures};
   }
 
-  fn assert(obj) {
-    ret Assert(obj, self.failures);
+  fn expect(obj) {
+    ret Expect(obj, self.failures);
   }
 }
 
-class Assert {
+class Expect {
   new(expected, failures) {
     ret { expected, failures };
   }
