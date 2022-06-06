@@ -1,40 +1,65 @@
-req "ptr" => $sspec_ptr;
+req "std";
+req "console";
+
+let $SSPEC_PASS = ".";
+let $SSPEC_FAILURE = "X";
 
 class Test {
-  new(descriptor) {
-    ret {descriptor};
+  new(failures) {
+    ret {failures};
   }
 
   fn assert(obj) {
-    ret Assert(obj);
+    ret Assert(obj, self.failures);
   }
 }
 
 class Assert {
-  new(expect) {
-    ret expect;
+  new(expected, failures) {
+    ret { expected, failures };
   }
 
   fn to_be(actual) {
-    let expected = $sspec_ptr.deref(self);
-    if expected != actual {
-      print "FAIL: expected " + expected + " to be " + actual;
+    if self.expected == actual {
+      console.write($SSPEC_PASS);
+    } else {
+      self.failures.push("expected " + self.expected + " to be " + actual);
+      console.write($SSPEC_FAILURE);
     }
   }
 
   fn to_be_truthy() {
-    if !$sspec_ptr.deref(self) {
-      print "FAIL: expected " + expected + " to be truthy";
+    if self.expected {
+      console.write($SSPEC_PASS);
+    } else {
+      self.failures.push("expected " + expected + " to be truthy");
+      console.write($SSPEC_FAILURE);
     }
   }
 
   fn to_be_falsy() {
-    if $sspec_ptr.deref(self) {
-      print "FAIL: expected " + expected + " to be falsy";
+    if !self.expected {
+      console.write($SSPEC_PASS);
+    } else {
+      self.failures.push("expected " + expected + " to be falsy");
+      console.write($SSPEC_FAILURE);
     }
   }
 }
 
-ret {
-  describe: (descriptor, func) {func(Test(descriptor));},
-};
+
+fn describe(descriptor, func) {
+  let failures = std.Array();
+  func(Test(failures));
+
+  console.writeln();
+
+  if failures.len() == 0 {
+    print "PASSED: " + descriptor;
+  } else {
+    print "FAILED: " + descriptor;
+    for let i = 0; i < failures.len(); i += 1 {
+      print failures[i];
+    }
+  }
+}
