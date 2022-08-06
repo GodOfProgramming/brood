@@ -49,7 +49,7 @@ class Expect {
 
 
 fn describe(descriptor, func) {
-  let failures = std.Array();
+  let failures = std.Vec();
   func(Test(failures));
 
   console.writeln();
