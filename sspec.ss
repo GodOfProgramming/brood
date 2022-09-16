@@ -1,25 +1,26 @@
 req "std";
 req "console";
+req "ps";
 
 let $SSPEC_PASS = ".";
 let $SSPEC_FAILURE = "X";
 
 class Test {
-  new(failures) {
-    ret {failures};
+  new(self, failures) {
+    self <- { failures };
   }
 
-  fn expect(obj) {
+  fn expect(self, obj) {
     ret Expect(obj, self.failures);
   }
 }
 
 class Expect {
-  new(expected, failures) {
-    ret { expected, failures };
+  new(self, expected, failures) {
+    self <- { expected, failures };
   }
 
-  fn to_be(actual) {
+  fn to_be(self, actual) {
     if self.expected == actual {
       console.write($SSPEC_PASS);
     } else {
@@ -28,7 +29,7 @@ class Expect {
     }
   }
 
-  fn to_be_truthy() {
+  fn to_be_truthy(self) {
     if self.expected {
       console.write($SSPEC_PASS);
     } else {
@@ -37,7 +38,7 @@ class Expect {
     }
   }
 
-  fn to_be_falsy() {
+  fn to_be_falsy(self) {
     if !self.expected {
       console.write($SSPEC_PASS);
     } else {
@@ -47,10 +48,10 @@ class Expect {
   }
 }
 
-
 fn describe(descriptor, func) {
   let failures = std.Vec();
-  func(Test(failures));
+  let t = Test(failures);
+  func(t);
 
   console.writeln();
 
@@ -61,5 +62,6 @@ fn describe(descriptor, func) {
     for let i = 0; i < failures.len(); i += 1 {
       print failures[i];
     }
+    ps.exit(1);
   }
 }
