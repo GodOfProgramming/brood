@@ -13,13 +13,16 @@ class Test {
   fn expect(self, obj) {
     ret Expect(obj, self.failures);
   }
+
+  fn fail(self, msg) {
+    self.failures.push(msg);
+  }
 }
 
 class Expect {
   new(self, expected, failures) {
     self <- { expected, failures };
   }
-
   fn to_be(self, actual) {
     if self.expected == actual {
       console.write($SSPEC_PASS);
@@ -51,17 +54,21 @@ class Expect {
 fn describe(descriptor, func) {
   let failures = std.Vec();
   let t = Test(failures);
-  func(t);
+  if func {
+    func(t);
 
-  console.writeln();
+    console.writeln();
 
-  if failures.len() == 0 {
-    print "PASSED: " + descriptor;
-  } else {
-    print "FAILED: " + descriptor;
-    for let i = 0; i < failures.len(); i += 1 {
-      print failures[i];
+    if failures.len() == 0 {
+      print "PASSED: " + descriptor;
+    } else {
+      print "FAILED: " + descriptor;
+      for let i = 0; i < failures.len(); i += 1 {
+        print failures[i];
+      }
+      ps.exit(1);
     }
-    ps.exit(1);
+  } else {
+    print "SKIPPED: "  + descriptor;
   }
 }
