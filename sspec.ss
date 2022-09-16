@@ -2,6 +2,8 @@ req "std";
 req "console";
 req "ps";
 
+use std.Vec;
+
 let $SSPEC_PASS = ".";
 let $SSPEC_FAILURE = "X";
 
@@ -52,7 +54,7 @@ class Expect {
 }
 
 fn describe(descriptor, func) {
-  let failures = std.Vec();
+  let failures = Vec();
   let t = Test(failures);
   if func {
     func(t);
