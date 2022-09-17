@@ -9,7 +9,7 @@ let $SSPEC_FAILURE = "X";
 
 class Test {
   new(self, failures) {
-    self <- { failures };
+    self.failures = failures;
   }
 
   fn expect(self, obj) {
@@ -23,7 +23,8 @@ class Test {
 
 class Expect {
   new(self, expected, failures) {
-    self <- { expected, failures };
+    self.expected = expected;
+    self.failures = failures;
   }
   fn to_be(self, actual) {
     if self.expected == actual {
