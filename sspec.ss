@@ -1,7 +1,3 @@
-req "std";
-req "console";
-req "ps";
-
 use std.Vec;
 
 let $SSPEC_PASS = ".";
