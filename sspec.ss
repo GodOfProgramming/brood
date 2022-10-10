@@ -2,6 +2,7 @@ use std.Vec;
 
 let $SSPEC_PASS = ".";
 let $SSPEC_FAILURE = "X";
+let $SSPEC_VERBOSE = false;
 
 class Test {
   new(self, failures) {
@@ -22,11 +23,16 @@ class Expect {
     self.expected = expected;
     self.failures = failures;
   }
+
   fn to_be(self, actual) {
     if self.expected == actual {
       console.write($SSPEC_PASS);
     } else {
-      self.failures.push("expected " + self.expected + " to be " + actual);
+      if $SSPEC_VERBOSE {
+        self.failures.push("expected " + std.debug(self.expected) + " to be " + std.debug(actual));
+      } else {
+        self.failures.push("expected " + self.expected + " to be " + actual);
+      }
       console.write($SSPEC_FAILURE);
     }
   }
