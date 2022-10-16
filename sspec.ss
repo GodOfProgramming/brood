@@ -1,16 +1,14 @@
-use std.Vec;
-
 let $SSPEC_PASS = ".";
 let $SSPEC_FAILURE = "X";
 let $SSPEC_VERBOSE = false;
 
-class Test {
+class SpecTest {
   new(self, failures) {
     self.failures = failures;
   }
 
   fn expect(self, obj) {
-    ret Expect(obj, self.failures);
+    ret SpecExpect(obj, self.failures);
   }
 
   fn fail(self, msg) {
@@ -18,7 +16,7 @@ class Test {
   }
 }
 
-class Expect {
+class SpecExpect {
   new(self, expected, failures) {
     self.expected = expected;
     self.failures = failures;
@@ -57,8 +55,8 @@ class Expect {
 }
 
 fn describe(descriptor, func) {
-  let failures = Vec();
-  let t = Test(failures);
+  let failures = Array();
+  let t = SpecTest(failures);
   if func {
     func(t);
 
