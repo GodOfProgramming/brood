@@ -1,6 +1,6 @@
 let $SSPEC_PASS = ".";
 let $SSPEC_FAILURE = "X";
-let $SSPEC_VERBOSE = false;
+let $SSPEC_VERBOSE = true;
 
 class SpecTest {
   new(self, failures) {
@@ -55,7 +55,7 @@ class SpecExpect {
 }
 
 fn describe(descriptor, func) {
-  let failures = Array();
+  let failures = [];
   let t = SpecTest(failures);
   if func {
     func(t);
