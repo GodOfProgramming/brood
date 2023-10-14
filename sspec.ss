@@ -2,14 +2,14 @@ let $SSPEC_PASS = ".";
 let $SSPEC_FAILURE = "X";
 let $SSPEC_VERBOSE = false;
 
-mod SSpec {
+mod sspec {
   class SpecTest {
     new(self, failures) {
       self.failures = failures;
     }
 
     fn expect(self, obj) {
-      ret SSpec.SpecExpect(obj, self.failures);
+      ret sspec.SpecExpect(obj, self.failures);
     }
 
     fn fail(self, msg) {
@@ -57,7 +57,7 @@ mod SSpec {
 
   fn describe(descriptor, func) {
     let failures = [];
-    let t = SSpec.SpecTest(failures);
+    let t = sspec.SpecTest(failures);
     if func {
       func(t);
 
