@@ -1,6 +1,6 @@
 let $SSPEC_PASS = ".";
 let $SSPEC_FAILURE = "X";
-let $SSPEC_VERBOSE = true;
+let $SSPEC_VERBOSE = false;
 
 class SpecTest {
   new(self, failures) {
