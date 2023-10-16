@@ -1,6 +1,17 @@
-let $SSPEC_PASS = ".";
-let $SSPEC_FAILURE = "X";
-let $SSPEC_VERBOSE = false;
+class Option {
+  new(self, value) {
+    self.value = value;
+  }
+
+  fn set(self, value) {
+    self.value = value;
+  }
+}
+
+let $VERBOSE = Option(false);
+
+let $PASS = ".";
+let $FAILURE = "X";
 
 class SpecTest {
   new(self, failures) {
@@ -24,37 +35,39 @@ class SpecExpect {
 
   fn to_be(self, actual) {
     if self.expected == actual {
-      console.write($SSPEC_PASS);
+      console.write($PASS);
     } else {
-      if $SSPEC_VERBOSE {
+      if $VERBOSE.value {
         self.failures.push("expected " + std.debug(self.expected) + " to be " + std.debug(actual));
       } else {
         self.failures.push("expected " + self.expected + " to be " + actual);
       }
-      console.write($SSPEC_FAILURE);
+      console.write($FAILURE);
     }
   }
 
   fn to_be_truthy(self) {
     if self.expected {
-      console.write($SSPEC_PASS);
+      console.write($PASS);
     } else {
       self.failures.push("expected " + expected + " to be truthy");
-      console.write($SSPEC_FAILURE);
+      console.write($FAILURE);
     }
   }
 
   fn to_be_falsy(self) {
     if !self.expected {
-      console.write($SSPEC_PASS);
+      console.write($PASS);
     } else {
       self.failures.push("expected " + expected + " to be falsy");
-      console.write($SSPEC_FAILURE);
+      console.write($FAILURE);
     }
   }
 }
 
 export mod {
+  let verbose: $VERBOSE;
+
   fn describe(descriptor, func) {
     let failures = [];
     let t = SpecTest(failures);
