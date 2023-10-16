@@ -76,11 +76,11 @@ export mod {
 
       console.writeln();
 
-      if failures.len {
+      if failures.len() == 0 {
         print "PASSED: " + descriptor;
       } else {
         print "FAILED: " + descriptor;
-        for let i = 0; i < failures.len; i += 1 {
+        for let i = 0; i < failures.len(); i += 1 {
           print failures[i];
         }
         ps.exit(1);
