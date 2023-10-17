@@ -66,7 +66,7 @@ class SpecExpect {
 }
 
 export mod {
-  let verbose: $VERBOSE;
+  verbose: $VERBOSE;
 
   fn describe(descriptor, func) {
     let failures = [];
