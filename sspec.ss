@@ -1,12 +1,4 @@
-class Option {
-  new(self, value) {
-    self.value = value;
-  }
-
-  fn set(self, value) {
-    self.value = value;
-  }
-}
+req "option" as Option;
 
 let $VERBOSE = Option(false);
 
@@ -66,7 +58,7 @@ class SpecExpect {
 }
 
 export mod {
-  verbose: $VERBOSE;
+  verbose: $VERBOSE,
 
   fn describe(descriptor, func) {
     let failures = [];
