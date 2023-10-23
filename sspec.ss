@@ -27,32 +27,32 @@ class SpecExpect {
 
   fn to_be(self, actual) {
     if self.expected == actual {
-      console.write($PASS);
+      console::write($PASS);
     } else {
       if $VERBOSE.value {
-        self.failures.push("expected " + std.debug(self.expected) + " to be " + std.debug(actual));
+        self.failures.push("expected " + std::debug(self.expected) + " to be " + std::debug(actual));
       } else {
         self.failures.push("expected " + self.expected + " to be " + actual);
       }
-      console.write($FAILURE);
+      console::write($FAILURE);
     }
   }
 
   fn to_be_truthy(self) {
     if self.expected {
-      console.write($PASS);
+      console::write($PASS);
     } else {
       self.failures.push("expected " + expected + " to be truthy");
-      console.write($FAILURE);
+      console::write($FAILURE);
     }
   }
 
   fn to_be_falsy(self) {
     if !self.expected {
-      console.write($PASS);
+      console::write($PASS);
     } else {
       self.failures.push("expected " + expected + " to be falsy");
-      console.write($FAILURE);
+      console::write($FAILURE);
     }
   }
 }
@@ -66,7 +66,7 @@ export mod {
     if func {
       func(t);
 
-      console.writeln();
+      console::writeln();
 
       if failures.len() == 0 {
         print "PASSED: " + descriptor;
