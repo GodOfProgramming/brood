@@ -1,5 +1,7 @@
 req "option" as Option;
 
+use std::console;
+
 let $VERBOSE = Option(false);
 
 let $PASS = ".";
