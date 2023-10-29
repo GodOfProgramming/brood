@@ -71,16 +71,16 @@ export mod {
       console::writeln();
 
       if failures.len() == 0 {
-        print "PASSED: " + descriptor;
+        println "PASSED: " + descriptor;
       } else {
-        print "FAILED: " + descriptor;
+        println "FAILED: " + descriptor;
         for let i = 0; i < failures.len(); i += 1 {
-          print failures[i];
+          println failures[i];
         }
         ps.exit(1);
       }
     } else {
-      print "SKIPPED: "  + descriptor;
+      println "SKIPPED: "  + descriptor;
     }
   }
 }
