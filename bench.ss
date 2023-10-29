@@ -1,6 +1,6 @@
 req "timer" as Timer;
 
-export mod {
+export mod bench {
   fn benchmark(descriptor, reps, func) {
     if !str.is_prefix(descriptor, "DISABLED") {
       println "running " + descriptor;

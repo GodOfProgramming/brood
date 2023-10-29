@@ -61,7 +61,7 @@ class SpecExpect {
   }
 }
 
-export mod {
+export mod sspec {
   verbose: $VERBOSE,
   fail_by_runtime_error: $FAIL_BY_RUNTIME_ERROR,
 

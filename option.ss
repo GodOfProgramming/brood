@@ -1,4 +1,4 @@
-export class {
+export class Option {
   new(self, value) {
     self.value = value;
   }

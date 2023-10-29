@@ -1,6 +1,6 @@
 use time.mono;
 
-export class {
+export class Timer {
   new(self) {
     self.elapsed = 0;
   }
