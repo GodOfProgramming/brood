@@ -4,6 +4,8 @@ use std::console;
 
 let $VERBOSE = Option(false);
 
+let $FAIL_BY_RUNTIME_ERROR = Option(false);
+
 let $PASS = ".";
 let $FAILURE = "X";
 
@@ -61,6 +63,7 @@ class SpecExpect {
 
 export mod {
   verbose: $VERBOSE,
+  fail_by_runtime_error: $FAIL_BY_RUNTIME_ERROR,
 
   fn describe(descriptor, func) {
     let failures = [];
@@ -72,12 +75,18 @@ export mod {
 
       if failures.len() == 0 {
         println "PASSED: " + descriptor;
+        ret true;
       } else {
         println "FAILED: " + descriptor;
         for let i = 0; i < failures.len(); i += 1 {
           println failures[i];
         }
-        ps.exit(1);
+        if $FAIL_BY_RUNTIME_ERROR.value {
+          undefined;
+        } else {
+          std::ps::exit(1); # TODO have suites return an error on failure
+        }
+        ret false;
       }
     } else {
       println "SKIPPED: "  + descriptor;
