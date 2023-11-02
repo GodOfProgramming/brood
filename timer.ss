@@ -1,4 +1,4 @@
-use time.mono;
+use std::time::mono;
 
 export class Timer {
   new(self) {
@@ -6,12 +6,12 @@ export class Timer {
   }
 
   fn start(self) {
-    self.timestamp = mono.now();
+    self.timestamp = mono::now();
   }
 
   fn stop(self) {
     if self.timestamp {
-      self.elapsed += mono.elapsed(self.timestamp);
+      self.elapsed += mono::elapsed(self.timestamp);
       self.timestamp = nil;
     }
   }
