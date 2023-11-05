@@ -1,3 +1,5 @@
+req "timer" as Timer;
+
 use std::str;
 use std::time::mono;
 
@@ -6,15 +8,15 @@ export mod bench {
     if !str::is_prefix(descriptor, "DISABLED") {
       println "running " + descriptor;
 
-      let now = mono::now();
+      let timer = Timer();
 
       for let i = 0; i < reps; i += 1 {
-        func(i);
+        func(timer, i);
       }
 
-      let elapsed = mono::elapsed(now);
+      let elapsed = timer.elapsed;
 
-      println(str::concat(descriptor, " took ", elapsed, " seconds"));
+      println(str::concat(descriptor, " took ", elapsed, " seconds", ", or ", elapsed / reps, " per exec"));
     }
   }
 }

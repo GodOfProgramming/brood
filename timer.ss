@@ -6,16 +6,12 @@ export class Timer {
     timestamp: mono::now(),
   }
 
-  new(self) {
-    self.elapsed = 0;
-  }
-
-  fn restart(self) {
+  fn start(self) {
     self.timestamp = mono::now();
   }
 
   fn stop(self) {
-    if self.timestamp {
+    if self.timestamp != nil {
       self.elapsed += mono::elapsed(self.timestamp);
       self.timestamp = nil;
     }
