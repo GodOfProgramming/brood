@@ -1,4 +1,8 @@
 export class Option {
+  self as struct {
+    value: nil
+  }
+
   new(self, value) {
     self.value = value;
   }

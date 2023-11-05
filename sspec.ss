@@ -10,8 +10,8 @@ let $PASS = ".";
 let $FAILURE = "X";
 
 class SpecTest {
-  new(self, failures) {
-    self.failures = failures;
+  self as struct {
+    failures: [],
   }
 
   fn expect(self, obj) {
@@ -24,6 +24,11 @@ class SpecTest {
 }
 
 class SpecExpect {
+  self as struct {
+    expected: nil,
+    failures: nil,
+  }
+
   new(self, expected, failures) {
     self.expected = expected;
     self.failures = failures;
@@ -66,20 +71,19 @@ export mod sspec {
   fail_by_runtime_error: $FAIL_BY_RUNTIME_ERROR,
 
   fn describe(descriptor, func) {
-    let failures = [];
-    let t = SpecTest(failures);
+    let t = SpecTest();
     if func {
       func(t);
 
       console::writeln();
 
-      if failures.len() == 0 {
+      if t.failures.len() == 0 {
         println "PASSED: " + descriptor;
         ret true;
       } else {
         println "FAILED: " + descriptor;
-        for let i = 0; i < failures.len(); i += 1 {
-          println failures[i];
+        for let i = 0; i < t.failures.len(); i += 1 {
+          println t.failures[i];
         }
         if $FAIL_BY_RUNTIME_ERROR.value {
           undefined;
