@@ -1,13 +1,64 @@
 req "option" as Option;
 
+use std::str;
 use std::console;
 
 let $VERBOSE = Option(false);
 
-let $FAIL_BY_RUNTIME_ERROR = Option(false);
-
+let $SEPARATOR = "----------------------------------------";
 let $PASS = ".";
 let $FAILURE = "X";
+
+let $PASS_TEXT = "PASSED: ";
+let $FAIL_TEXT = "FAILED: ";
+let $SKIP_TEXT = "SKIPPED: ";
+
+class SpecSuite {
+  self as struct {
+    successes: [],
+    failures: [],
+    skips: [],
+  }
+
+  # Enter a description of part of a suite
+  #
+  # [desc] - a description of what the body will assert
+  # [func] - a function to be called with the test object
+  fn describe(self, desc, func) {
+    let test = SpecTest();
+    if func {
+      func(test);
+
+      if test.failures.len() == 0 {
+        self.successes.push(desc);
+      } else {
+        self.failures.push(FailedTest(desc, test.failures));
+      }
+    } else {
+      self.skips.push(desc);
+    }
+  }
+
+  fn _has_failures(self) {
+    ret self.failures.len() != 0;
+  }
+
+  fn _has_skips(self) {
+    ret self.skips.len() != 0;
+  }
+}
+
+class FailedTest {
+  self as struct {
+    header: nil,
+    failures: nil,
+  }
+
+  new(self, header, fails) {
+    self.header = header;
+    self.failures = fails;
+  }
+}
 
 class SpecTest {
   self as struct {
@@ -19,81 +70,162 @@ class SpecTest {
   }
 
   fn fail(self, msg) {
-    self.failures.push(msg);
+    self.failures.push(ForcedFailure(msg));
   }
 }
 
 class SpecExpect {
   self as struct {
-    expected: nil,
+    actual: nil,
     failures: nil,
   }
 
-  new(self, expected, failures) {
-    self.expected = expected;
+  new(self, actual, failures) {
+    self.actual = actual;
     self.failures = failures;
   }
 
-  fn to_be(self, actual) {
-    if self.expected == actual {
+  fn to_be(self, expected) {
+    if self.actual == expected {
       console::write($PASS);
+      ret Success();
     } else {
-      if $VERBOSE.value {
-        self.failures.push("expected " + std::debug(self.expected) + " to be " + std::debug(actual));
-      } else {
-        self.failures.push("expected " + self.expected + " to be " + actual);
-      }
       console::write($FAILURE);
+      if $VERBOSE.value {
+        let dbgact = std::debug(self.actual);
+        let dbgexp = std::debug(expected);
+
+        let failure = Failure(dbgact, dbgexp);
+        self.failures.push(failure);
+        ret failure;
+      } else {
+        let failure = Failure(self.actual, expected);
+        self.failures.push(failure);
+        ret failure;
+      }
     }
   }
 
   fn to_be_truthy(self) {
-    if self.expected {
+    if self.actual {
       console::write($PASS);
+      ret Success();
     } else {
-      self.failures.push("expected " + expected + " to be truthy");
       console::write($FAILURE);
+      let failure = Failure(self.actual, "truthy");
+      self.failures.push(failure);
+      ret failure;
     }
   }
 
   fn to_be_falsy(self) {
-    if !self.expected {
+    if !self.actual {
       console::write($PASS);
+      ret Success();
     } else {
-      self.failures.push("expected " + expected + " to be falsy");
       console::write($FAILURE);
+      let failure = Failure(self.actual, "falsy");
+      self.failures.push(failure);
+      ret failure;
     }
+  }
+}
+
+class Success {
+  self as nil
+
+  fn context(self, msg) {}
+}
+
+class Failure {
+  self as struct {
+    actual: nil,
+    expected: nil,
+    ctx: nil,
+  }
+
+  new(self, actual, expected) {
+    self.actual = actual;
+    self.expected = expected;
+  }
+
+  fn context(self, msg) {
+    self.ctx = msg;
+  }
+
+  fn display(self) {
+    if self.ctx != nil {
+      ret str::concat("expected ", self.actual, " to be ", self.expected, ": ", self.ctx);
+    } else {
+      ret str::concat("expected ", self.actual, " to be ", self.expected);
+    }
+  }
+}
+
+class ForcedFailure {
+  self as struct {
+    msg: nil,
+  }
+
+  new(self, msg) {
+    self.msg = msg;
+  }
+
+  fn display(self) {
+    ret self.msg;
   }
 }
 
 export mod brood {
   verbose: $VERBOSE,
-  fail_by_runtime_error: $FAIL_BY_RUNTIME_ERROR,
 
-  fn describe(descriptor, func) {
-    let t = SpecTest();
+  # Declare a test suite with a desc
+  #
+  # [desc] - a description of what the body will assert
+  # [func] - a function to be called with the suite object
+  fn suite(desc: str, func: Fn(SpecSuite)) {
+    $VERBOSE.set(false);
+
+    let suite = SpecSuite();
+
     if func {
-      func(t);
+      console::writeln("Running suite: ", desc);
+
+      func(suite);
+
+      console::writeln("\n\n --- Results --- \n");
+
+      for let i = 0; i < suite.successes.len(); i += 1 {
+        console::writeln($PASS_TEXT, suite.successes[i]);
+      }
+
+      if suite._has_failures() {
+        console::writeln($SEPARATOR);
+
+        for let i = 0; i < suite.failures.len(); i += 1 {
+          let test = suite.failures[i];
+          console::writeln($FAIL_TEXT, test.header);
+          for let i = 0; i < test.failures.len(); i += 1 {
+            console::writeln(test.failures[i].display());
+          }
+        }
+      }
+
+      if suite._has_skips() {
+        console::writeln($SEPARATOR);
+
+        for let i = 0; i < suite.skips.len(); i += 1 {
+          console::writeln($SKIP_TEXT, suite.skips[i]);
+        }
+      }
 
       console::writeln();
 
-      if t.failures.len() == 0 {
-        println "PASSED: " + descriptor;
-        ret true;
-      } else {
-        println "FAILED: " + descriptor;
-        for let i = 0; i < t.failures.len(); i += 1 {
-          println t.failures[i];
-        }
-        if $FAIL_BY_RUNTIME_ERROR.value {
-          undefined;
-        } else {
-          std::ps::exit(1); # TODO have suites return an error on failure
-        }
-        ret false;
+      if suite._has_failures() {
+        quack "Some tests failed";
       }
     } else {
-      println "SKIPPED: "  + descriptor;
+      console::writeln($SKIP_TEXT, desc);
     }
   }
 }
