@@ -6,8 +6,8 @@ use std::console;
 let $VERBOSE = Option(false);
 
 let $SEPARATOR = "----------------------------------------";
-let $PASS = ".";
-let $FAILURE = "X";
+let $PASS = "."[0];
+let $FAILURE = "X"[0];
 
 let $PASS_TEXT = "PASSED: ";
 let $FAIL_TEXT = "FAILED: ";
@@ -63,6 +63,18 @@ class FailedTest {
 class SpecTest {
   self as struct {
     failures: [],
+  }
+
+  fn assert(self, expr) {
+    if expr {
+      console::write($PASS);
+      ret Success();
+    } else {
+      console::write($FAILURE);
+      let failure = Failure(expr, true);
+      self.failures.push(failure);
+      ret failure;
+    }
   }
 
   fn expect(self, obj) {
