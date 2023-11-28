@@ -3,9 +3,13 @@ req "timer" as Timer;
 use std::str;
 use std::time::mono;
 
+let DISABLED_PREFIX = "DISABLED";
+
 export mod bench {
+  DISABLED_PREFIX,
+
   fn benchmark(descriptor, reps, func) {
-    if !str::is_prefix(descriptor, "DISABLED") {
+    if !str::is_prefix(descriptor, DISABLED_PREFIX) {
       println "running " + descriptor;
 
       let timer = Timer();
