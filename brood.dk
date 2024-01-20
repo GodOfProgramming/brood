@@ -14,10 +14,10 @@ let $FAIL_TEXT = "FAILED: ";
 let $SKIP_TEXT = "SKIPPED: ";
 
 class SpecSuite {
-  self as struct {
-    successes: [],
-    failures: [],
-    skips: [],
+  new(self) {
+    self.successes = [];
+    self.failures = [];
+    self.skips = [];
   }
 
   # Enter a description of part of a suite
@@ -49,11 +49,6 @@ class SpecSuite {
 }
 
 class FailedTest {
-  self as struct {
-    header: nil,
-    failures: nil,
-  }
-
   new(self, header, fails) {
     self.header = header;
     self.failures = fails;
@@ -61,8 +56,8 @@ class FailedTest {
 }
 
 class SpecTest {
-  self as struct {
-    failures: [],
+  new(self) {
+    self.failures = [];
   }
 
   fn assert(self, expr) {
@@ -87,11 +82,6 @@ class SpecTest {
 }
 
 class SpecExpect {
-  self as struct {
-    actual: nil,
-    failures: nil,
-  }
-
   new(self, actual, failures) {
     self.actual = actual;
     self.failures = failures;
@@ -144,21 +134,14 @@ class SpecExpect {
 }
 
 class Success {
-  self as nil
-
   fn context(self, msg) {}
 }
 
 class Failure {
-  self as struct {
-    actual: nil,
-    expected: nil,
-    ctx: nil,
-  }
-
   new(self, actual, expected) {
     self.actual = actual;
     self.expected = expected;
+    self.ctx = nil;
   }
 
   fn context(self, msg) {
@@ -175,10 +158,6 @@ class Failure {
 }
 
 class ForcedFailure {
-  self as struct {
-    msg: nil,
-  }
-
   new(self, msg) {
     self.msg = msg;
   }

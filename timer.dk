@@ -1,9 +1,9 @@
 use std::time::mono;
 
 export class Timer {
-  self as struct {
-    elapsed: 0,
-    timestamp: mono::now(),
+  new(self) {
+    self.elapsed = 0;
+    self.timestamp = mono::now();
   }
 
   fn start(self) {
